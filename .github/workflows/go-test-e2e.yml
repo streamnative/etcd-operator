@@ -1,6 +1,7 @@
 name: Testing E2E
-on:
-  push:
+# disable until it is ported
+#on:
+#  push:
 jobs:
   prepare:
     name: Prepare

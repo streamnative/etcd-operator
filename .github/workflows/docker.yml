@@ -1,9 +1,9 @@
 name: Docker image
-on:
-  pull_request:
-  push:
-    branches:
-      - master
+#on:
+#  pull_request:
+#  push:
+#    branches:
+#      - master
 jobs:
 
   build:
@@ -11,10 +11,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-    - name: Set up Go 1.13
+    - name: Set up Go 1.15
       uses: actions/setup-go@v2.1.3
       with:
-        go-version: 1.13
+        go-version: 1.15
       id: go
 
     - name: Check out code into the Go module directory
@@ -31,8 +31,24 @@ jobs:
         hack/build/backup-operator/build
         hack/build/restore-operator/build
 
+  deploy:
+    name: Deploy
+    steps:
     - name: Build image
       run: docker build -t docker.pkg.github.com/cbws/etcd-operator/operator:latest -f hack/build/Dockerfile .
+
+    - name: Publish to GCR
+      uses: docker/build-push-action@v1
+      with:
+        registry: gcr.io
+        repository: affable-ray-226821/streamnative/etcd-operator
+        username: oauth2accesstoken
+        password: ${{ steps.gcr_access_token.outputs.token }}
+        tags: ${{ steps.image_meta.outputs.extra_tags }}
+        tag_with_ref: true
+        tag_with_sha: true
+        add_git_labels: true
+
 
     - name: Push image to GPR
       if: github.ref == 'refs/heads/master'
