@@ -14,10 +14,6 @@ on:
       - 'release/v[0-9]+.[0-9]+'
       - 'master'
 
-env:
-  GITHUB_SHA: ${{ github.sha }}
-#  GOOGLE_APPLICATION_CREDENTIALS: GOOGLE_APPLICATION_CREDENTIALS.json
-
 jobs:
   publish:
     name: Publish
@@ -34,19 +30,6 @@ jobs:
           repository: streamnative/actions-library
           token: ${{ secrets.REPO_ACCESS_TOKEN }}
           path: .github/actions
-#
-#      - name: Compute target metadata
-#        id: target_meta
-#        uses: ./.github/actions/target_metadata
-#
-#      - name: Compute Image Tag
-#        id: image_meta
-#        uses: ./.github/actions/image_metadata
-#        with:
-#          base_image: gcr.io/affable-ray-226821/streamnative/etcd-operator
-#          target_env: ${{ steps.target_meta.outputs.target_env }}
-#          tag_name: ${{ steps.target_meta.outputs.tag_name }}
-#          release_version: ${{ steps.target_meta.outputs.release_version }}
 
       - name: Setup Initial Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v0
@@ -70,8 +53,7 @@ jobs:
           repository: affable-ray-226821/streamnative/etcd-operator
           username: oauth2accesstoken
           password: ${{ steps.gcr_access_token.outputs.token }}
-#          tags: ${{ steps.image_meta.outputs.extra_tags }}
           tag_with_ref: true
           tag_with_sha: true
           add_git_labels: true
-          build_args: REVISION=${{ github.sha }}
+          build_args: VERSION=${{ github.ref_name }},REVISION=${{ github.sha }}
