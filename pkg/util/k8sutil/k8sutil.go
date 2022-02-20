@@ -105,7 +105,7 @@ func makeRestoreInitContainers(backupURL *url.URL, token, repo, version string, 
 	return []v1.Container{
 		{
 			Name:  "fetch-backup",
-			Image: "tutum/curl",
+			Image: "curlimages/curl",
 			Command: []string{
 				"/bin/bash", "-ec",
 				fmt.Sprintf(`
@@ -275,9 +275,9 @@ func AddEtcdVolumeToPod(pod *v1.Pod, pvc *v1.PersistentVolumeClaim, tmpfs bool) 
 		vol.VolumeSource = v1.VolumeSource{
 			PersistentVolumeClaim: &v1.PersistentVolumeClaimVolumeSource{ClaimName: pvc.Name},
 		}
-               // Addresses case C from https://github.com/coreos/etcd-operator/blob/master/doc/design/persistent_volumes_etcd_data.md
-               // When PVC is used, make the pod auto recover in case of failure
-               pod.Spec.RestartPolicy = v1.RestartPolicyAlways
+		// Addresses case C from https://github.com/coreos/etcd-operator/blob/master/doc/design/persistent_volumes_etcd_data.md
+		// When PVC is used, make the pod auto recover in case of failure
+		pod.Spec.RestartPolicy = v1.RestartPolicyAlways
 	} else {
 		vol.VolumeSource = v1.VolumeSource{EmptyDir: &v1.EmptyDirVolumeSource{}}
 		if tmpfs {

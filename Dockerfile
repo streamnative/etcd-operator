@@ -5,7 +5,6 @@ ARG VERSION=dev
 ARG REVISION=dev
 ARG CREATED=dev
 
-COPY vendor /go/src/
 COPY cmd cmd
 COPY pkg pkg
 COPY version version
