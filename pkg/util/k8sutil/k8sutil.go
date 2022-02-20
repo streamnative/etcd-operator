@@ -105,7 +105,7 @@ func makeRestoreInitContainers(backupURL *url.URL, token, repo, version string, 
 	return []v1.Container{
 		{
 			Name:  "fetch-backup",
-			Image: "curlimages/curl",
+			Image: "bitnami/bitnami-shell:10",
 			Command: []string{
 				"/bin/bash", "-ec",
 				fmt.Sprintf(`
